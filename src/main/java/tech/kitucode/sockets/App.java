@@ -24,6 +24,7 @@ public class App {
             }
         }
         log.info("system|about to start app on port:" + port);
+        Runtime.getRuntime().addShutdownHook(new ShutDownHook());
         try {
             initServer(port);
         } catch (Exception e) {
@@ -123,5 +124,17 @@ public class App {
     private static String prepareWelcomeMessage() {
         return "Hello, welcome to rock paper and scissors game.....\n" +
                 "Make a choice below to play the game, enter rock, paper or scissors. Enter exit at any time to end game..";
+    }
+
+    static class ShutDownHook extends Thread{
+        @Override
+        public void run() {
+            log.info("system|closing application gracefully|cleaning up resources");
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
