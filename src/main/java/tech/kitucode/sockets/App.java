@@ -3,11 +3,13 @@ package tech.kitucode.sockets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
-
 
 public class App {
     private static final Logger log = LogManager.getLogger(App.class);
@@ -126,14 +128,14 @@ public class App {
                 "Make a choice below to play the game, enter rock, paper or scissors. Enter exit at any time to end game..";
     }
 
-    static class ShutDownHook extends Thread{
+    static class ShutDownHook extends Thread {
         @Override
         public void run() {
             log.info("system|closing application gracefully|cleaning up resources");
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                log.error("system|error while closing server socket|port = " + serverSocket.getLocalPort());
             }
         }
     }
