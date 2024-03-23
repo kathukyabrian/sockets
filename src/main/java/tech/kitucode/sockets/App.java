@@ -8,9 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
 
-/**
- * Hello world!
- */
+
 public class App {
     private static final Logger log = LogManager.getLogger(App.class);
     private static final int DEFAULT_PORT = 8080;
@@ -88,31 +86,35 @@ public class App {
             return "invalid choice, please enter something";
         }
 
-//        if (!choice.equals("rock") || !choice.equals("paper") || !choice.equals("scissors")) {
-//            return "invalid choice, please enter either rock, paper or scissors";
-//        }
-
-        // Rock wins against scissors; paper wins against rock; and scissors wins against paper
         // rock, paper, scissors
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("The computer chose ").append(randomChoice).append(".You chose ").append(choice).append(".\n");
+        // input paper
 
-        boolean rockWins = choice.equals("rock") && randomChoice.equals("scissors");
-        boolean paperWins = choice.equals("paper") && randomChoice.equals("rock");
-        boolean scissorsWins = choice.equals("scissors") && randomChoice.equals("paper");
-        if (rockWins || paperWins || scissorsWins) {
-            stringBuilder.append("Congratulations, you won");
-        } else {
-            if (choice.equals(randomChoice)) {
-                stringBuilder.append("It's a draw");
+        //
+        if (choice.equals("rock") || choice.equals("paper") || choice.equals("scissors")) {
+            // Rock wins against scissors; paper wins against rock; and scissors wins against paper
+            // rock, paper, scissors
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("The computer chose ").append(randomChoice).append(".You chose ").append(choice).append(".\n");
+
+            boolean rockWins = choice.equals("rock") && randomChoice.equals("scissors");
+            boolean paperWins = choice.equals("paper") && randomChoice.equals("rock");
+            boolean scissorsWins = choice.equals("scissors") && randomChoice.equals("paper");
+            if (rockWins || paperWins || scissorsWins) {
+                stringBuilder.append("Congratulations, you won");
             } else {
-                stringBuilder.append("Oops, sorry you lost");
+                if (choice.equals(randomChoice)) {
+                    stringBuilder.append("It's a draw");
+                } else {
+                    stringBuilder.append("Oops, sorry you lost");
+                }
             }
-        }
 
-        stringBuilder.append("\nMake a choice below to continue the game, enter rock, paper or scissors, enter exit to end game...");
-        stringBuilder.append("\n---------------------------------------------------------------------------------------------------------------------");
-        return stringBuilder.toString();
+            stringBuilder.append("\nMake a choice below to continue the game, enter rock, paper or scissors, enter exit to end game...");
+            stringBuilder.append("\n---------------------------------------------------------------------------------------------------------------------");
+            return stringBuilder.toString();
+        }else{
+            return "invalid choice, please enter either rock, paper or scissors";
+        }
     }
 
     // load app configs
