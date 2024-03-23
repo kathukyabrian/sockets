@@ -38,7 +38,6 @@ public class App {
         serverSocket = new ServerSocket(port);
         log.info("system|waiting for a client to connect");
         while (true) {
-            // this is a blo
             Socket socket = serverSocket.accept();
 
             new Thread(() -> {
@@ -64,7 +63,7 @@ public class App {
                             socket.close();
                         }
 
-                        // Picking a random element from the array
+                        // pick a random choice from choices array
                         Random random = new Random();
                         String randomChoice = choices[random.nextInt(choices.length)];
 
@@ -77,8 +76,6 @@ public class App {
                 }
 
             }).start();
-
-            // read from socket
         }
 
     }
