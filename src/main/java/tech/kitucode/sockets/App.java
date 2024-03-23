@@ -13,10 +13,9 @@ public class App {
     private static final Logger log = LogManager.getLogger(App.class);
     private static final int DEFAULT_PORT = 8080;
     private static String[] choices = {"rock", "paper", "scissors"};
-
     private static ServerSocket serverSocket;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         int port = DEFAULT_PORT;
         if (args != null && args.length > 0 && args[0] != null) {
             try {
@@ -34,31 +33,31 @@ public class App {
 
     private static void initServer(Integer port) throws Exception {
         serverSocket = new ServerSocket(port);
-
+        log.info("system|waiting for a client to connect");
         while (true) {
-            log.info("system|waiting for a client to connect");
             // this is a blo
             Socket socket = serverSocket.accept();
 
             new Thread(() -> {
-                log.info("system|client connected from port " + socket.getPort() + "|host=" + socket.getLocalAddress());
+                log.info("system|client connected from host = " + socket.getLocalAddress() + "|port = " + socket.getPort());
 
                 try {
-                    PrintWriter out =                                            // 2nd statement
-                            new PrintWriter(socket.getOutputStream(), true);
-                    BufferedReader in =                                          // 3rd statement
-                            new BufferedReader(
-                                    new InputStreamReader(socket.getInputStream()));
-                    out.println("Hello, welcome to rock paper and scissors game.....");
-                    out.println("Make a choice below to start the game, enter rock, paper or scissors. Enter exit at any time to end game..");
+                    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                    BufferedReader in = new BufferedReader(
+                            new InputStreamReader(socket.getInputStream()));
+
+                    out.println(prepareWelcomeMessage());
 
                     String userInput;
                     while ((userInput = in.readLine()) != null) {
                         userInput = userInput.toLowerCase();
 
-                        log.info("system|client connected from port " + socket.getPort() + "|host=" + socket.getLocalAddress() + "|received message : " + userInput);
+                        log.info("system|client connected from host = " + socket.getLocalAddress() + "|port = "
+                                + socket.getPort() + "|received message : " + userInput);
 
                         if (userInput.equals("exit")) {
+                            log.info("system|closing socket|host = " + socket.getLocalAddress() + "|port = "
+                                    + socket.getPort());
                             socket.close();
                         }
 
@@ -66,7 +65,8 @@ public class App {
                         Random random = new Random();
                         String randomChoice = choices[random.nextInt(choices.length)];
 
-                        String response = play(userInput, randomChoice);
+                        StringBuilder response = play(userInput, randomChoice);
+                        addResponseRider(response);
                         out.println(response);
                     }
                 } catch (IOException e) {
@@ -80,36 +80,48 @@ public class App {
 
     }
 
-    public static String play(String choice, String randomChoice) {
+    public static StringBuilder play(String choice, String randomChoice) {
         choice = choice.trim();
         if (choice == null || choice.isEmpty()) {
-            return "invalid choice, please enter something";
+            return new StringBuilder("invalid choice, please enter something\n");
         }
 
         if (choice.equals("rock") || choice.equals("paper") || choice.equals("scissors")) {
-            // Rock wins against scissors; paper wins against rock; and scissors wins against paper
-            // rock, paper, scissors
+
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("The computer chose ").append(randomChoice).append(".You chose ").append(choice).append(".\n");
 
-            boolean rockWins = choice.equals("rock") && randomChoice.equals("scissors");
-            boolean paperWins = choice.equals("paper") && randomChoice.equals("rock");
-            boolean scissorsWins = choice.equals("scissors") && randomChoice.equals("paper");
-            if (rockWins || paperWins || scissorsWins) {
-                stringBuilder.append("Congratulations, you won");
+            boolean won = checkIfUserWon(choice, randomChoice);
+            if (won) {
+                stringBuilder.append("Congratulations, you won\n");
             } else {
                 if (choice.equals(randomChoice)) {
-                    stringBuilder.append("It's a draw");
+                    stringBuilder.append("It's a draw\n");
                 } else {
-                    stringBuilder.append("Oops, sorry you lost");
+                    stringBuilder.append("Oops, sorry you lost\n");
                 }
             }
-
-            stringBuilder.append("\nMake a choice below to continue the game, enter rock, paper or scissors, enter exit to end game...");
-            stringBuilder.append("\n---------------------------------------------------------------------------------------------------------------------");
-            return stringBuilder.toString();
-        }else{
-            return "invalid choice, please enter either rock, paper or scissors...";
+            return stringBuilder;
+        } else {
+            return new StringBuilder("invalid choice, please enter either rock, paper or scissors...\n");
         }
+    }
+
+    private static boolean checkIfUserWon(String choice, String randomChoice) {
+        boolean rockWins = choice.equals("rock") && randomChoice.equals("scissors");
+        boolean paperWins = choice.equals("paper") && randomChoice.equals("rock");
+        boolean scissorsWins = choice.equals("scissors") && randomChoice.equals("paper");
+
+        return rockWins || paperWins || scissorsWins;
+    }
+
+    private static void addResponseRider(StringBuilder response) {
+        response.append("Make a choice below to continue the game, enter rock, paper or scissors, enter exit to end game...\n");
+        response.append("---------------------------------------------------------------------------------------------------------------------");
+    }
+
+    private static String prepareWelcomeMessage() {
+        return "Hello, welcome to rock paper and scissors game.....\n" +
+                "Make a choice below to play the game, enter rock, paper or scissors. Enter exit at any time to end game..";
     }
 }
