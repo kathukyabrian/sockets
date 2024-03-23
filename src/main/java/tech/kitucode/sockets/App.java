@@ -86,10 +86,6 @@ public class App {
             return "invalid choice, please enter something";
         }
 
-        // rock, paper, scissors
-        // input paper
-
-        //
         if (choice.equals("rock") || choice.equals("paper") || choice.equals("scissors")) {
             // Rock wins against scissors; paper wins against rock; and scissors wins against paper
             // rock, paper, scissors
@@ -113,9 +109,7 @@ public class App {
             stringBuilder.append("\n---------------------------------------------------------------------------------------------------------------------");
             return stringBuilder.toString();
         }else{
-            return "invalid choice, please enter either rock, paper or scissors";
+            return "invalid choice, please enter either rock, paper or scissors...";
         }
     }
-
-    // load app configs
 }
