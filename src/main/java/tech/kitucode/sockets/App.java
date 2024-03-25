@@ -61,6 +61,7 @@ public class App {
                             log.info("system|closing socket|host = " + socket.getLocalAddress() + "|port = "
                                     + socket.getPort());
                             socket.close();
+                            in.close();
                         }
 
                         // pick a random choice from choices array
